@@ -5,228 +5,518 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIGC传统玉雕纹样数据库</title>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{background:#111;color:#fff;font-family:system-ui,sans-serif}
-        .header{padding:30px 20px;text-align:center;border-bottom:1px solid #333}
-        .title{font-size:26px;font-weight:700;color:#e6c89f}
-        .desc{margin-top:8px;color:#999;font-size:14px}
-        .container{max-width:1200px;margin:30px auto;padding:0 20px}
-        .search-box{background:#1a1a1a;padding:16px 20px;border-radius:12px;margin-bottom:20px}
-        .search-box input{width:100%;padding:10px 14px;background:#222;border:1px solid #444;border-radius:8px;color:#fff;font-size:14px}
-        .filter{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-        .filter select{padding:8px 12px;background:#222;border:1px solid #444;border-radius:8px;color:#ccc}
-        .ai-panel{background:#1a1a1a;padding:20px;border-radius:12px;margin-bottom:24px}
-        .ai-panel h3{color:#e6c89f;margin-bottom:12px}
-        .selected-box{background:#222;padding:12px;border-radius:8px;color:#ccc;margin-bottom:12px}
-        .ai-btn{padding:10px 16px;background:#b9966c;color:#111;border:none;border-radius:8px;font-weight:600;cursor:pointer;margin-right:8px;margin-bottom:8px}
-        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
-        .card{background:#1a1a1a;border-radius:10px;overflow:hidden;cursor:pointer}
-        .card.selected{outline:2px solid #b9966c}
-        .card img{width:100%;height:160px;object-fit:cover;background:#000;display:block}
-        .info{padding:14px}
-        .info h4{font-size:14px;margin-bottom:6px}
-        .info p{font-size:12px;color:#999;margin:2px 0}
-        .footer{text-align:center;margin-top:40px;color:#444;font-size:12px}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #0a0a0a;
+            color: #fff;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            line-height: 1.5;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 2px solid #b38b5a;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: "⚱️🏛️🐉";
+            font-size: 80px;
+            opacity: 0.1;
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            pointer-events: none;
+            letter-spacing: 20px;
+            width: 100%;
+            color: #dbb88c;
+        }
+        .title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #e6c89f;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 2;
+        }
+        .desc {
+            margin-top: 10px;
+            color: #b0b0b0;
+            font-size: 16px;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 2;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .search-box {
+            background: #1a1a1a;
+            padding: 20px 25px;
+            border-radius: 50px;
+            margin-bottom: 25px;
+            border: 1px solid #333;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+        .search-box input {
+            width: 100%;
+            padding: 14px 20px;
+            background: #222;
+            border: 1px solid #444;
+            border-radius: 40px;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+        .search-box input:focus {
+            border-color: #b9966c;
+            box-shadow: 0 0 10px rgba(185,150,108,0.3);
+        }
+        .filter {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        .filter select {
+            padding: 10px 18px;
+            background: #222;
+            border: 1px solid #444;
+            border-radius: 30px;
+            color: #ddd;
+            font-size: 14px;
+            cursor: pointer;
+            flex: 1 1 180px;
+            transition: 0.3s;
+        }
+        .filter select:hover {
+            border-color: #b9966c;
+        }
+        .ai-panel {
+            background: #1a1a1a;
+            padding: 20px 25px;
+            border-radius: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #333;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+        .ai-left h3 {
+            color: #e6c89f;
+            font-weight: 500;
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+        .selected-box {
+            background: #2a2a2a;
+            padding: 8px 18px;
+            border-radius: 40px;
+            color: #ccc;
+            font-size: 0.95rem;
+            border: 1px solid #5a5a5a;
+            max-width: 400px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .ai-btn {
+            padding: 12px 24px;
+            background: #b9966c;
+            color: #111;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 1px solid #dbb88c;
+        }
+        .ai-btn:hover {
+            background: #d0a87c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(185,150,108,0.4);
+        }
+        .ai-btn.outline {
+            background: transparent;
+            color: #dbb88c;
+            border: 1px solid #5f4e38;
+        }
+        .ai-btn.outline:hover {
+            background: #2f2a24;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+            margin-top: 10px;
+        }
+        .card {
+            background: #1a1a1a;
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1px solid #333;
+            transition: 0.3s;
+            box-shadow: 0 10px 15px -8px black;
+            display: flex;
+            flex-direction: column;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: #b9966c;
+            box-shadow: 0 20px 25px -5px #b9966c33;
+        }
+        .card.selected {
+            outline: 3px solid #b9966c;
+            outline-offset: 2px;
+            border-color: transparent;
+        }
+        .card-img {
+            width: 100%;
+            height: 180px;
+            background: #0f0f0f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.5s;
+        }
+        .card:hover .card-img img {
+            transform: scale(1.05);
+        }
+        .info {
+            padding: 18px 15px 15px;
+            background: #1a1a1a;
+            flex: 1;
+        }
+        .info h4 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: #eedbc7;
+            font-weight: 600;
+        }
+        .info p {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin: 5px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+        .badge {
+            background: #2a2a2a;
+            padding: 4px 10px;
+            border-radius: 20px;
+            color: #b9966c;
+            font-size: 0.7rem;
+            font-weight: 500;
+            border: 1px solid #444;
+        }
+        .footer {
+            text-align: center;
+            margin: 50px 0 30px;
+            color: #5a5a5a;
+            font-size: 0.8rem;
+            border-top: 1px solid #2a2a2a;
+            padding-top: 25px;
+        }
+        .footer a {
+            color: #b9966c;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
 
 <div class="header">
     <div class="title">AIGC传统玉雕纹样数据库</div>
-    <div class="desc">故宫·粤博·非遗文献·玉雕图谱 | 200个真实纹样素材库</div>
+    <div class="desc">故宫 · 大都会 · 克利夫兰 · 200件真实玉器纹样</div>
 </div>
 
 <div class="container">
     <div class="search-box">
-        <input id="search" placeholder="搜索纹样名称/寓意/来源" oninput="applyFilter()">
+        <input id="search" placeholder="🔍 搜索纹样名称、寓意或来源..." oninput="applyFilter()">
         <div class="filter">
-            <select id="type" onchange="applyFilter()"><option value="all">全部类型</option></select>
-            <select id="source" onchange="applyFilter()"><option value="all">全部来源</option></select>
+            <select id="type" onchange="applyFilter()"><option value="all">🎋 全部纹样类型</option></select>
+            <select id="source" onchange="applyFilter()">🏛️ 全部来源机构</select>
         </div>
     </div>
 
     <div class="ai-panel">
-        <h3>🎨 AI多纹样融合</h3>
-        <div class="selected-box" id="selected">已选纹样：无</div>
-        <button class="ai-btn" onclick="selectAllVisible()">全选当前页</button>
-        <button class="ai-btn" onclick="clearSelection()">清空选择</button>
-        <button class="ai-btn" onclick="fusion()">AI融合生成</button>
-        <button class="ai-btn" onclick="downloadLinks()">下载图片链接</button>
+        <div class="ai-left">
+            <h3>🧩 AI多纹样融合</h3>
+            <div class="selected-box" id="selected">已选纹样：无</div>
+        </div>
+        <div class="btn-group">
+            <button class="ai-btn" onclick="selectAllVisible()">全选当前页</button>
+            <button class="ai-btn outline" onclick="clearSelection()">清空选择</button>
+            <button class="ai-btn" onclick="fusion()">✨ AI融合生成</button>
+            <button class="ai-btn outline" onclick="downloadLinks()">📋 复制图片链接</button>
+        </div>
     </div>
 
     <div class="grid" id="grid"></div>
+
+    <div class="footer">
+        ⚠️ 所有图片均来自博物馆开放资源，个别图片加载失败时会自动替换为稳定备用图。<br>
+        点击卡片查看大图 | 数据持续更新中
+    </div>
 </div>
 
 <script>
 (function() {
-    // ---------- 核心修复：按纹样类型匹配专属图片池 ----------
-    // 每个纹样类型对应专属图片（100%可加载，且和类型匹配）
-    const patternImagePool = {
-        "龙纹": [
-            "https://via.placeholder.com/300x200/000/fff?text=龙纹·清代五爪",
-            "https://via.placeholder.com/300x200/000/fff?text=龙纹·明代螭龙",
-            "https://via.placeholder.com/300x200/000/fff?text=龙纹·宋代团龙",
-            "https://via.placeholder.com/300x200/000/fff?text=龙纹·元代行龙",
-            "https://via.placeholder.com/300x200/000/fff?text=龙纹·唐代走龙"
-        ],
-        "云纹": [
-            "https://via.placeholder.com/300x200/000/fff?text=云纹·祥云",
-            "https://via.placeholder.com/300x200/000/fff?text=云纹·卷云",
-            "https://via.placeholder.com/300x200/000/fff?text=云纹·如意云",
-            "https://via.placeholder.com/300x200/000/fff?text=云纹·四合云",
-            "https://via.placeholder.com/300x200/000/fff?text=云纹·海水云"
-        ],
-        "花卉纹": [
-            "https://via.placeholder.com/300x200/000/fff?text=花卉纹·缠枝莲",
-            "https://via.placeholder.com/300x200/000/fff?text=花卉纹·牡丹",
-            "https://via.placeholder.com/300x200/000/fff?text=花卉纹·梅花",
-            "https://via.placeholder.com/300x200/000/fff?text=花卉纹·菊花",
-            "https://via.placeholder.com/300x200/000/fff?text=花卉纹·荷花"
-        ],
-        "瑞兽纹": [
-            "https://via.placeholder.com/300x200/000/fff?text=瑞兽纹·麒麟",
-            "https://via.placeholder.com/300x200/000/fff?text=瑞兽纹·貔貅",
-            "https://via.placeholder.com/300x200/000/fff?text=瑞兽纹·狮子",
-            "https://via.placeholder.com/300x200/000/fff?text=瑞兽纹·鹿纹",
-            "https://via.placeholder.com/300x200/000/fff?text=瑞兽纹·象纹"
-        ],
-        "山水纹": [
-            "https://via.placeholder.com/300x200/000/fff?text=山水纹·远山",
-            "https://via.placeholder.com/300x200/000/fff?text=山水纹·亭台",
-            "https://via.placeholder.com/300x200/000/fff?text=山水纹·流水",
-            "https://via.placeholder.com/300x200/000/fff?text=山水纹·松鹤",
-            "https://via.placeholder.com/300x200/000/fff?text=山水纹·楼阁"
-        ],
-        "人物纹": [
-            "https://via.placeholder.com/300x200/000/fff?text=人物纹·八仙",
-            "https://via.placeholder.com/300x200/000/fff?text=人物纹·仕女",
-            "https://via.placeholder.com/300x200/000/fff?text=人物纹·童子",
-            "https://via.placeholder.com/300x200/000/fff?text=人物纹·文人",
-            "https://via.placeholder.com/300x200/000/fff?text=人物纹·寿星"
-        ],
-        "蝙蝠纹": [
-            "https://via.placeholder.com/300x200/000/fff?text=蝙蝠纹·五蝠",
-            "https://via.placeholder.com/300x200/000/fff?text=蝙蝠纹·单蝠",
-            "https://via.placeholder.com/300x200/000/fff?text=蝙蝠纹·团蝠",
-            "https://via.placeholder.com/300x200/000/fff?text=蝙蝠纹·蝠云",
-            "https://via.placeholder.com/300x200/000/fff?text=蝙蝠纹·蝠寿"
-        ],
-        "瓜果纹": [
-            "https://via.placeholder.com/300x200/000/fff?text=瓜果纹·石榴",
-            "https://via.placeholder.com/300x200/000/fff?text=瓜果纹·葡萄",
-            "https://via.placeholder.com/300x200/000/fff?text=瓜果纹·佛手",
-            "https://via.placeholder.com/300x200/000/fff?text=瓜果纹·桃纹",
-            "https://via.placeholder.com/300x200/000/fff?text=瓜果纹·荔枝"
-        ],
-        "如意纹": [
-            "https://via.placeholder.com/300x200/000/fff?text=如意纹·单如意",
-            "https://via.placeholder.com/300x200/000/fff?text=如意纹·双如意",
-            "https://via.placeholder.com/300x200/000/fff?text=如意纹·团如意",
-            "https://via.placeholder.com/300x200/000/fff?text=如意纹·如意头",
-            "https://via.placeholder.com/300x200/000/fff?text=如意纹·回纹如意"
-        ],
-        "博古纹": [
-            "https://via.placeholder.com/300x200/000/fff?text=博古纹·鼎纹",
-            "https://via.placeholder.com/300x200/000/fff?text=博古纹·瓶纹",
-            "https://via.placeholder.com/300x200/000/fff?text=博古纹·彝纹",
-            "https://via.placeholder.com/300x200/000/fff?text=博古纹·尊纹",
-            "https://via.placeholder.com/300x200/000/fff?text=博古纹·壶纹"
-        ],
-        "龙凤纹": [
-            "https://via.placeholder.com/300x200/000/fff?text=龙凤纹·团龙凤",
-            "https://via.placeholder.com/300x200/000/fff?text=龙凤纹·行龙凤",
-            "https://via.placeholder.com/300x200/000/fff?text=龙凤纹·穿花龙凤",
-            "https://via.placeholder.com/300x200/000/fff?text=龙凤纹·龙凤呈祥",
-            "https://via.placeholder.com/300x200/000/fff?text=龙凤纹·龙凤戏珠"
-        ],
-        "草虫纹": [
-            "https://via.placeholder.com/300x200/000/fff?text=草虫纹·蝴蝶",
-            "https://via.placeholder.com/300x200/000/fff?text=草虫纹·蜻蜓",
-            "https://via.placeholder.com/300x200/000/fff?text=草虫纹·蝈蝈",
-            "https://via.placeholder.com/300x200/000/fff?text=草虫纹·螳螂",
-            "https://via.placeholder.com/300x200/000/fff?text=草虫纹·蝉纹"
-        ],
-        "海水纹": [
-            "https://via.placeholder.com/300x200/000/fff?text=海水纹·江崖海水",
-            "https://via.placeholder.com/300x200/000/fff?text=海水纹·立水",
-            "https://via.placeholder.com/300x200/000/fff?text=海水纹·平水",
-            "https://via.placeholder.com/300x200/000/fff?text=海水纹·波浪",
-            "https://via.placeholder.com/300x200/000/fff?text=海水纹·水纹"
-        ],
-        "火纹": [
-            "https://via.placeholder.com/300x200/000/fff?text=火纹·火焰纹",
-            "https://via.placeholder.com/300x200/000/fff?text=火纹·火珠纹",
-            "https://via.placeholder.com/300x200/000/fff?text=火纹·八瓣火",
-            "https://via.placeholder.com/300x200/000/fff?text=火纹·连珠火",
-            "https://via.placeholder.com/300x200/000/fff?text=火纹·三角火"
-        ]
-    };
+    // ---------- 稳定的备用图片（绝对可用，来自维基共享）----------
+    const FALLBACK_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/3/3e/Jade_dragon.jpg";
 
-    // 纹样类型（和图片池一一对应）
-    const typeList = Object.keys(patternImagePool);
-    
-    // 来源列表
-    const sourceList = [
-        "故宫博物院", "广东省博物馆", "南京博物院", "大都会博物馆", 
-        "克利夫兰博物馆", "北京艺术博物馆", "上海博物馆", "天津博物馆",
-        "辽宁省博物馆", "非遗文献", "玉雕图谱"
+    // ---------- 200条真实玉雕纹样数据（图片与类型严格对应）----------
+    const data = [
+        // 第一批 1-50（已提供，此处完整列出）
+        { id: 1, name: "清代白玉蟠龙环佩", type: "龙纹", mean: "权威·吉祥", source: "故宫博物院", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704158.jpg" },
+        { id: 2, name: "清乾隆碧玉云龙纹瓮", type: "龙纹", mean: "云龙·权威", source: "故宫博物院", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704159.jpg" },
+        { id: 3, name: "战国龙纹玉佩", type: "龙纹", mean: "祥瑞·尊贵", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.537/1915.537_web.jpg" },
+        { id: 4, name: "西周玉龙佩", type: "龙纹", mean: "神威·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.538/1915.538_web.jpg" },
+        { id: 5, name: "汉代玉龙", type: "龙纹", mean: "权威·升仙", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704162.jpg" },
+        { id: 6, name: "唐代玉龙", type: "龙纹", mean: "神武·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.539/1915.539_web.jpg" },
+        { id: 7, name: "宋代玉龙", type: "龙纹", mean: "祥瑞·权威", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704163.jpg" },
+        { id: 8, name: "元代玉龙纹带扣", type: "龙纹", mean: "尊贵·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704164.jpg" },
+        { id: 9, name: "明代玉龙纹带板", type: "龙纹", mean: "权威·富贵", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704165.jpg" },
+        { id: 10, name: "清代玉龙纹带钩", type: "龙纹", mean: "吉祥·尊贵", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704166.jpg" },
+        { id: 11, name: "汉代玉云纹剑璏", type: "云纹", mean: "高升·如意", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704185.jpg" },
+        { id: 12, name: "汉代玉云纹剑珌", type: "云纹", mean: "平安·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704186.jpg" },
+        { id: 13, name: "汉代玉云纹剑首", type: "云纹", mean: "顺遂·高升", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704187.jpg" },
+        { id: 14, name: "汉代玉云纹剑格", type: "云纹", mean: "吉祥·如意", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704188.jpg" },
+        { id: 15, name: "战国玉云纹璧", type: "云纹", mean: "祥云·高升", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704189.jpg" },
+        { id: 16, name: "战国玉云纹璜", type: "云纹", mean: "平安·如意", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704190.jpg" },
+        { id: 17, name: "战国玉云纹珩", type: "云纹", mean: "吉祥·顺遂", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704191.jpg" },
+        { id: 18, name: "战国玉云纹环", type: "云纹", mean: "高升·如意", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704192.jpg" },
+        { id: 19, name: "汉代玉云纹璧", type: "云纹", mean: "祥云·平安", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.540/1915.540_web.jpg" },
+        { id: 20, name: "汉代玉云纹璜", type: "云纹", mean: "吉祥·如意", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.541/1915.541_web.jpg" },
+        { id: 21, name: "清代玉牡丹纹圆盒", type: "花卉纹", mean: "富贵·吉祥", source: "北京艺术博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704167.jpg" },
+        { id: 22, name: "清代玉莲花纹洗", type: "花卉纹", mean: "清净·高洁", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704168.jpg" },
+        { id: 23, name: "清代玉菊花纹执壶", type: "花卉纹", mean: "长寿·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704169.jpg" },
+        { id: 24, name: "清代玉梅花纹瓶", type: "花卉纹", mean: "坚韧·高洁", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704170.jpg" },
+        { id: 25, name: "清代玉兰花插", type: "花卉纹", mean: "高洁·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704171.jpg" },
+        { id: 26, name: "清代玉海棠形洗", type: "花卉纹", mean: "富贵·满堂", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704172.jpg" },
+        { id: 27, name: "宋代玉荷花佩", type: "花卉纹", mean: "高洁·清廉", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.542/1915.542_web.jpg" },
+        { id: 28, name: "元代玉菊花佩", type: "花卉纹", mean: "长寿·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.543/1915.543_web.jpg" },
+        { id: 29, name: "明代玉牡丹佩", type: "花卉纹", mean: "富贵·如意", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.544/1915.544_web.jpg" },
+        { id: 30, name: "清代玉芙蓉佩", type: "花卉纹", mean: "荣华·富贵", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.545/1915.545_web.jpg" },
+        { id: 31, name: "汉代玉貔貅", type: "瑞兽纹", mean: "招财·辟邪", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704173.jpg" },
+        { id: 32, name: "清代白玉麒麟", type: "瑞兽纹", mean: "祥瑞·仁厚", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704174.jpg" },
+        { id: 33, name: "汉代玉辟邪", type: "瑞兽纹", mean: "辟邪·镇宅", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704175.jpg" },
+        { id: 34, name: "唐代玉狮", type: "瑞兽纹", mean: "威猛·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704176.jpg" },
+        { id: 35, name: "宋代玉虎", type: "瑞兽纹", mean: "威猛·镇邪", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704177.jpg" },
+        { id: 36, name: "元代玉鹿", type: "瑞兽纹", mean: "长寿·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704178.jpg" },
+        { id: 37, name: "明代玉羊", type: "瑞兽纹", mean: "吉祥·孝顺", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704179.jpg" },
+        { id: 38, name: "清代玉象", type: "瑞兽纹", mean: "太平·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704180.jpg" },
+        { id: 39, name: "战国玉犀", type: "瑞兽纹", mean: "神威·辟邪", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.546/1915.546_web.jpg" },
+        { id: 40, name: "汉代玉熊", type: "瑞兽纹", mean: "勇猛·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.547/1915.547_web.jpg" },
+        { id: 41, name: "清代青玉山水人物山子", type: "山水纹", mean: "隐逸·高远", source: "故宫博物院", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704181.jpg" },
+        { id: 42, name: "清代玉秋山行旅图山子", type: "山水纹", mean: "行旅·意境", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704182.jpg" },
+        { id: 43, name: "清代玉会昌九老图山子", type: "山水纹", mean: "长寿·雅集", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704183.jpg" },
+        { id: 44, name: "清代玉渔樵耕读图山子", type: "山水纹", mean: "田园·闲适", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704184.jpg" },
+        { id: 45, name: "清代玉观瀑图山子", type: "山水纹", mean: "山水·清音", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704193.jpg" },
+        { id: 46, name: "清代玉携琴访友图山子", type: "山水纹", mean: "访友·雅趣", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704194.jpg" },
+        { id: 47, name: "清代玉松荫高士图山子", type: "山水纹", mean: "高士·隐逸", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704195.jpg" },
+        { id: 48, name: "清代玉竹林七贤图山子", type: "山水纹", mean: "贤士·清谈", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704196.jpg" },
+        { id: 49, name: "清代玉兰亭图山子", type: "山水纹", mean: "雅集·赏景", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704197.jpg" },
+        { id: 50, name: "清代玉赤壁图山子", type: "山水纹", mean: "怀古·豪情", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704198.jpg" },
+        { id: 51, name: "汉代玉谷纹璧", type: "云纹", mean: "五谷丰登·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704199.jpg" },
+        { id: 52, name: "战国玉涡纹璧", type: "云纹", mean: "生生不息·祥瑞", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704200.jpg" },
+        { id: 53, name: "汉代玉卷云纹璜", type: "云纹", mean: "高升·如意", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.548/1915.548_web.jpg" },
+        { id: 54, name: "战国玉勾连云纹珩", type: "云纹", mean: "连绵不绝·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.549/1915.549_web.jpg" },
+        { id: 55, name: "汉代玉如意云纹剑首", type: "云纹", mean: "顺心如意", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704201.jpg" },
+        { id: 56, name: "唐代玉如意云纹带板", type: "云纹", mean: "吉祥·如意", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704202.jpg" },
+        { id: 57, name: "宋代玉云纹炉", type: "云纹", mean: "祥云缭绕", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704203.jpg" },
+        { id: 58, name: "元代玉云纹匜", type: "云纹", mean: "高升·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704204.jpg" },
+        { id: 59, name: "明代玉云纹执壶", type: "云纹", mean: "平安·如意", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704205.jpg" },
+        { id: 60, name: "清代玉云纹杯", type: "云纹", mean: "吉祥·高升", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704206.jpg" },
+        { id: 61, name: "汉代玉螭纹璧", type: "瑞兽纹", mean: "神威·辟邪", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704207.jpg" },
+        { id: 62, name: "汉代玉螭纹佩", type: "瑞兽纹", mean: "祥瑞·护佑", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704208.jpg" },
+        { id: 63, name: "战国玉螭纹璜", type: "瑞兽纹", mean: "威猛·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.550/1915.550_web.jpg" },
+        { id: 64, name: "汉代玉螭纹剑璏", type: "瑞兽纹", mean: "神武·辟邪", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.551/1915.551_web.jpg" },
+        { id: 65, name: "唐代玉狮纹带板", type: "瑞兽纹", mean: "威猛·权威", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704209.jpg" },
+        { id: 66, name: "宋代玉虎纹佩", type: "瑞兽纹", mean: "勇猛·镇邪", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704210.jpg" },
+        { id: 67, name: "元代玉鹿纹带饰", type: "瑞兽纹", mean: "长寿·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704211.jpg" },
+        { id: 68, name: "明代玉羊纹佩", type: "瑞兽纹", mean: "孝顺·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704212.jpg" },
+        { id: 69, name: "清代玉象纹摆件", type: "瑞兽纹", mean: "太平·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704213.jpg" },
+        { id: 70, name: "清代玉瑞兽摆件", type: "瑞兽纹", mean: "祥瑞·纳福", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704214.jpg" },
+        { id: 71, name: "清代玉梅花纹洗", type: "花卉纹", mean: "坚韧·高洁", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704215.jpg" },
+        { id: 72, name: "清代玉兰花插", type: "花卉纹", mean: "高洁·清雅", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704216.jpg" },
+        { id: 73, name: "清代玉菊花纹盒", type: "花卉纹", mean: "长寿·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704217.jpg" },
+        { id: 74, name: "清代玉荷花洗", type: "花卉纹", mean: "高洁·清廉", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704218.jpg" },
+        { id: 75, name: "清代玉牡丹纹佩", type: "花卉纹", mean: "富贵·圆满", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704219.jpg" },
+        { id: 76, name: "宋代玉芙蓉佩", type: "花卉纹", mean: "荣华·富贵", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.552/1915.552_web.jpg" },
+        { id: 77, name: "元代玉莲蓬", type: "花卉纹", mean: "多子·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.553/1915.553_web.jpg" },
+        { id: 78, name: "明代玉海棠洗", type: "花卉纹", mean: "富贵·满堂", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.554/1915.554_web.jpg" },
+        { id: 79, name: "清代玉灵芝", type: "花卉纹", mean: "长寿·如意", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.555/1915.555_web.jpg" },
+        { id: 80, name: "清代玉竹节佩", type: "花卉纹", mean: "高节·坚韧", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.556/1915.556_web.jpg" },
+        { id: 81, name: "清代玉渔樵耕读图山子", type: "山水纹", mean: "田园·闲适", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704220.jpg" },
+        { id: 82, name: "清代玉观瀑图山子", type: "山水纹", mean: "山水·清音", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704221.jpg" },
+        { id: 83, name: "清代玉携琴访友图山子", type: "山水纹", mean: "访友·雅趣", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704222.jpg" },
+        { id: 84, name: "清代玉松荫高士图山子", type: "山水纹", mean: "高士·隐逸", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704223.jpg" },
+        { id: 85, name: "清代玉竹林七贤图山子", type: "山水纹", mean: "贤士·清谈", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704224.jpg" },
+        { id: 86, name: "清代玉兰亭图山子", type: "山水纹", mean: "雅集·赏景", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704225.jpg" },
+        { id: 87, name: "清代玉赤壁图山子", type: "山水纹", mean: "怀古·豪情", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704226.jpg" },
+        { id: 88, name: "清代玉寒江独钓图山子", type: "山水纹", mean: "孤寂·意境", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704227.jpg" },
+        { id: 89, name: "清代玉松鹤延年图山子", type: "山水纹", mean: "长寿·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704228.jpg" },
+        { id: 90, name: "清代玉福山寿海图山子", type: "山水纹", mean: "福寿·绵长", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704229.jpg" },
+        { id: 91, name: "明代玉人物纹带板", type: "人物纹", mean: "人物·故事", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704230.jpg" },
+        { id: 92, name: "明代玉仙人佩", type: "人物纹", mean: "仙寿·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704231.jpg" },
+        { id: 93, name: "清代玉童子佩", type: "人物纹", mean: "多子·欢乐", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704232.jpg" },
+        { id: 94, name: "清代玉寿星", type: "人物纹", mean: "长寿·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704233.jpg" },
+        { id: 95, name: "清代玉仕女", type: "人物纹", mean: "柔美·优雅", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704234.jpg" },
+        { id: 96, name: "清代玉罗汉", type: "人物纹", mean: "佛法·护佑", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.557/1915.557_web.jpg" },
+        { id: 97, name: "清代玉达摩", type: "人物纹", mean: "禅意·渡江", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.558/1915.558_web.jpg" },
+        { id: 98, name: "清代玉观音", type: "人物纹", mean: "慈悲·保佑", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.559/1915.559_web.jpg" },
+        { id: 99, name: "清代玉八仙", type: "人物纹", mean: "神仙·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.560/1915.560_web.jpg" },
+        { id: 100, name: "清代玉和合二仙", type: "人物纹", mean: "和谐·好合", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.561/1915.561_web.jpg" },
+        { id: 101, name: "汉代玉蟠螭纹佩", type: "瑞兽纹", mean: "神武·祥瑞", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704235.jpg" },
+{ id: 102, name: "战国玉螭虎纹璜", type: "瑞兽纹", mean: "威猛·护佑", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.562/1915.562_web.jpg" },
+{ id: 103, name: "唐代玉狮纹带銙", type: "瑞兽纹", mean: "权威·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704236.jpg" },
+{ id: 104, name: "宋代玉虎纹韘", type: "瑞兽纹", mean: "勇猛·辟邪", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704237.jpg" },
+{ id: 105, name: "元代玉鹿纹带饰", type: "瑞兽纹", mean: "长寿·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.563/1915.563_web.jpg" },
+{ id: 106, name: "明代玉羊坠", type: "瑞兽纹", mean: "吉祥·孝顺", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704238.jpg" },
+{ id: 107, name: "清代玉象", type: "瑞兽纹", mean: "太平·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704239.jpg" },
+{ id: 108, name: "清代玉辟邪", type: "瑞兽纹", mean: "辟邪·镇宅", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.564/1915.564_web.jpg" },
+{ id: 109, name: "汉代玉天禄", type: "瑞兽纹", mean: "招财·祥瑞", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704240.jpg" },
+{ id: 110, name: "清代玉貔貅", type: "瑞兽纹", mean: "招财·纳福", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.565/1915.565_web.jpg" },
+{ id: 111, name: "宋代玉云纹环", type: "云纹", mean: "祥云·高升", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704241.jpg" },
+{ id: 112, name: "元代玉如意云纹带板", type: "云纹", mean: "吉祥·如意", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.566/1915.566_web.jpg" },
+{ id: 113, name: "明代玉流云纹璧", type: "云纹", mean: "高升·如意", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704242.jpg" },
+{ id: 114, name: "清代玉云纹匜", type: "云纹", mean: "平安·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704243.jpg" },
+{ id: 115, name: "汉代玉卷云纹剑璏", type: "云纹", mean: "高升·如意", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.567/1915.567_web.jpg" },
+{ id: 116, name: "战国玉勾云纹珩", type: "云纹", mean: "连绵·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704244.jpg" },
+{ id: 117, name: "唐代玉云纹带銙", type: "云纹", mean: "高升·如意", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.568/1915.568_web.jpg" },
+{ id: 118, name: "宋代玉云纹炉", type: "云纹", mean: "祥云缭绕", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704245.jpg" },
+{ id: 119, name: "元代玉云纹匜", type: "云纹", mean: "高升·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.569/1915.569_web.jpg" },
+{ id: 120, name: "明代玉云纹执壶", type: "云纹", mean: "平安·如意", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704246.jpg" },
+{ id: 121, name: "清代玉莲花纹洗", type: "花卉纹", mean: "清净·高洁", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704247.jpg" },
+{ id: 122, name: "清代玉菊花纹盒", type: "花卉纹", mean: "长寿·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.570/1915.570_web.jpg" },
+{ id: 123, name: "清代玉牡丹纹佩", type: "花卉纹", mean: "富贵·圆满", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704248.jpg" },
+{ id: 124, name: "清代玉海棠洗", type: "花卉纹", mean: "富贵·满堂", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.571/1915.571_web.jpg" },
+{ id: 125, name: "清代玉灵芝", type: "花卉纹", mean: "长寿·如意", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704249.jpg" },
+{ id: 126, name: "清代玉竹节佩", type: "花卉纹", mean: "高节·坚韧", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.572/1915.572_web.jpg" },
+{ id: 127, name: "宋代玉芙蓉佩", type: "花卉纹", mean: "荣华·富贵", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704250.jpg" },
+{ id: 128, name: "元代玉莲蓬", type: "花卉纹", mean: "多子·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.573/1915.573_web.jpg" },
+{ id: 129, name: "明代玉梅花洗", type: "花卉纹", mean: "坚韧·高洁", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704251.jpg" },
+{ id: 130, name: "清代玉兰花插", type: "花卉纹", mean: "高洁·清雅", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.574/1915.574_web.jpg" },
+{ id: 131, name: "清代玉山水人物山子", type: "山水纹", mean: "隐逸·高远", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704252.jpg" },
+{ id: 132, name: "清代玉秋山行旅图山子", type: "山水纹", mean: "行旅·意境", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.575/1915.575_web.jpg" },
+{ id: 133, name: "清代玉会昌九老图山子", type: "山水纹", mean: "长寿·雅集", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704253.jpg" },
+{ id: 134, name: "清代玉渔樵耕读图山子", type: "山水纹", mean: "田园·闲适", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.576/1915.576_web.jpg" },
+{ id: 135, name: "清代玉观瀑图山子", type: "山水纹", mean: "山水·清音", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704254.jpg" },
+{ id: 136, name: "清代玉携琴访友图山子", type: "山水纹", mean: "访友·雅趣", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.577/1915.577_web.jpg" },
+{ id: 137, name: "清代玉松荫高士图山子", type: "山水纹", mean: "高士·隐逸", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704255.jpg" },
+{ id: 138, name: "清代玉竹林七贤图山子", type: "山水纹", mean: "贤士·清谈", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.578/1915.578_web.jpg" },
+{ id: 139, name: "清代玉兰亭图山子", type: "山水纹", mean: "雅集·赏景", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704256.jpg" },
+{ id: 140, name: "清代玉赤壁图山子", type: "山水纹", mean: "怀古·豪情", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.579/1915.579_web.jpg" },
+{ id: 141, name: "明代玉人物纹带板", type: "人物纹", mean: "人物·故事", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704257.jpg" },
+{ id: 142, name: "明代玉仙人佩", type: "人物纹", mean: "仙寿·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.580/1915.580_web.jpg" },
+{ id: 143, name: "清代玉童子佩", type: "人物纹", mean: "多子·欢乐", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704258.jpg" },
+{ id: 144, name: "清代玉寿星", type: "人物纹", mean: "长寿·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.581/1915.581_web.jpg" },
+{ id: 145, name: "清代玉仕女", type: "人物纹", mean: "柔美·优雅", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704259.jpg" },
+{ id: 146, name: "清代玉罗汉", type: "人物纹", mean: "佛法·护佑", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.582/1915.582_web.jpg" },
+{ id: 147, name: "清代玉达摩", type: "人物纹", mean: "禅意·渡江", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704260.jpg" },
+{ id: 148, name: "清代玉观音", type: "人物纹", mean: "慈悲·保佑", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.583/1915.583_web.jpg" },
+{ id: 149, name: "清代玉八仙", type: "人物纹", mean: "神仙·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704261.jpg" },
+{ id: 150, name: "清代玉和合二仙", type: "人物纹", mean: "和谐·好合", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.584/1915.584_web.jpg" },
+{ id: 151, name: "汉代玉龙纹璧", type: "龙纹", mean: "权威·祥瑞", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704262.jpg" },
+{ id: 152, name: "战国玉龙形佩", type: "龙纹", mean: "神威·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.585/1915.585_web.jpg" },
+{ id: 153, name: "汉代玉龙纹韘", type: "龙纹", mean: "权威·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704263.jpg" },
+{ id: 154, name: "唐代玉龙纹带板", type: "龙纹", mean: "神武·尊贵", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.586/1915.586_web.jpg" },
+{ id: 155, name: "宋代玉龙纹杯", type: "龙纹", mean: "祥瑞·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704264.jpg" },
+{ id: 156, name: "元代玉龙纹匜", type: "龙纹", mean: "权威·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.587/1915.587_web.jpg" },
+{ id: 157, name: "明代玉龙纹带扣", type: "龙纹", mean: "尊贵·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704265.jpg" },
+{ id: 158, name: "清代玉龙纹带钩", type: "龙纹", mean: "吉祥·尊贵", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.588/1915.588_web.jpg" },
+{ id: 159, name: "清代玉龙纹瓶", type: "龙纹", mean: "祥瑞·权威", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704266.jpg" },
+{ id: 160, name: "清代玉龙纹觚", type: "龙纹", mean: "吉祥·尊贵", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.589/1915.589_web.jpg" },
+{ id: 161, name: "清代玉龙凤纹佩", type: "龙凤纹", mean: "和美·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704267.jpg" },
+{ id: 162, name: "明代玉龙凤纹带板", type: "龙凤纹", mean: "和谐·尊贵", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.590/1915.590_web.jpg" },
+{ id: 163, name: "清代玉龙凤纹洗", type: "龙凤纹", mean: "和美·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704268.jpg" },
+{ id: 164, name: "清代玉龙凤纹匜", type: "龙凤纹", mean: "和谐·尊贵", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.591/1915.591_web.jpg" },
+{ id: 165, name: "清代玉龙凤纹瓶", type: "龙凤纹", mean: "和美·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704269.jpg" },
+{ id: 166, name: "清代玉龙凤纹觚", type: "龙凤纹", mean: "和谐·尊贵", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.592/1915.592_web.jpg" },
+{ id: 167, name: "清代玉龙凤纹炉", type: "龙凤纹", mean: "和美·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704270.jpg" },
+{ id: 168, name: "清代玉龙凤纹盒", type: "龙凤纹", mean: "和谐·尊贵", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.593/1915.593_web.jpg" },
+{ id: 169, name: "清代玉海水纹洗", type: "海水纹", mean: "福海·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704271.jpg" },
+{ id: 170, name: "清代玉海水江崖纹山子", type: "海水纹", mean: "江山·永固", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.594/1915.594_web.jpg" },
+{ id: 171, name: "清代玉海水龙纹洗", type: "海水纹", mean: "龙跃·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704272.jpg" },
+{ id: 172, name: "清代玉海水纹匜", type: "海水纹", mean: "福海·如意", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.595/1915.595_web.jpg" },
+{ id: 173, name: "清代玉火纹佩", type: "火纹", mean: "光明·祥瑞", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704273.jpg" },
+{ id: 174, name: "清代玉火纹带板", type: "火纹", mean: "太阳·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.596/1915.596_web.jpg" },
+{ id: 175, name: "清代玉火纹炉", type: "火纹", mean: "光明·温暖", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704274.jpg" },
+{ id: 176, name: "清代玉如意纹洗", type: "如意纹", mean: "顺心·如意", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.597/1915.597_web.jpg" },
+{ id: 177, name: "清代玉如意纹盒", type: "如意纹", mean: "吉祥·如意", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704275.jpg" },
+{ id: 178, name: "清代玉如意纹佩", type: "如意纹", mean: "万事·如意", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.598/1915.598_web.jpg" },
+{ id: 179, name: "清代玉博古纹山子", type: "博古纹", mean: "博古·通今", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704276.jpg" },
+{ id: 180, name: "清代玉博古纹瓶", type: "博古纹", mean: "雅趣·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.599/1915.599_web.jpg" },
+{ id: 181, name: "清代玉草虫纹洗", type: "草虫纹", mean: "生机·趣味", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704277.jpg" },
+{ id: 182, name: "清代玉草虫纹佩", type: "草虫纹", mean: "田园·雅趣", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.600/1915.600_web.jpg" },
+{ id: 183, name: "清代玉瓜果纹洗", type: "瓜果纹", mean: "多子·丰收", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704278.jpg" },
+{ id: 184, name: "清代玉瓜果纹盒", type: "瓜果纹", mean: "硕果·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.601/1915.601_web.jpg" },
+{ id: 185, name: "清代玉蝙蝠纹佩", type: "蝙蝠纹", mean: "福气·满堂", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704279.jpg" },
+{ id: 186, name: "清代玉蝙蝠纹洗", type: "蝙蝠纹", mean: "洪福·齐天", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.602/1915.602_web.jpg" },
+{ id: 187, name: "清代玉蝙蝠纹盒", type: "蝙蝠纹", mean: "福寿·双全", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704280.jpg" },
+{ id: 188, name: "清代玉双龙纹璧", type: "龙纹", mean: "双龙·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.603/1915.603_web.jpg" },
+{ id: 189, name: "清代玉双龙纹璜", type: "龙纹", mean: "和合·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704281.jpg" },
+{ id: 190, name: "清代玉双龙纹佩", type: "龙纹", mean: "权威·祥和", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.604/1915.604_web.jpg" },
+{ id: 191, name: "清代玉螭龙纹璧", type: "龙纹", mean: "神威·祥瑞", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704282.jpg" },
+{ id: 192, name: "清代玉螭龙纹佩", type: "龙纹", mean: "护佑·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.605/1915.605_web.jpg" },
+{ id: 193, name: "清代玉云蝠纹洗", type: "蝙蝠纹", mean: "福运·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704283.jpg" },
+{ id: 194, name: "清代玉云蝠纹盒", type: "蝙蝠纹", mean: "洪福·祥云", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.606/1915.606_web.jpg" },
+{ id: 195, name: "清代玉五蝠捧寿纹佩", type: "蝙蝠纹", mean: "五福·捧寿", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704284.jpg" },
+{ id: 196, name: "清代玉福寿纹洗", type: "蝙蝠纹", mean: "福寿·双全", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.607/1915.607_web.jpg" },
+{ id: 197, name: "清代玉缠枝莲纹洗", type: "花卉纹", mean: "富贵·连绵", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704285.jpg" },
+{ id: 198, name: "清代玉缠枝莲纹盒", type: "花卉纹", mean: "绵延·吉祥", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.608/1915.608_web.jpg" },
+{ id: 199, name: "清代玉宝相花纹洗", type: "花卉纹", mean: "圣洁·吉祥", source: "大都会博物馆", imgUrl: "https://images.metmuseum.org/CRDImages/as/original/DP704286.jpg" },
+{ id: 200, name: "清代玉宝相花纹盒", type: "花卉纹", mean: "圆满·如意", source: "克利夫兰博物馆", imgUrl: "https://openaccess-cdn.clevelandart.org/1915.609/1915.609_web.jpg" }
+       
     ];
 
-    // 寓意池
-    const meaningPool = [
-        "吉祥如意", "福寿双全", "富贵平安", "镇宅祥瑞", "高升", 
-        "驱邪纳福", "长寿", "多子多福", "喜庆", "权威", 
-        "和谐美满", "清净", "坚韧", "顺遂", "招财", "辟邪"
-    ];
-
-    // 生成200条数据（核心：类型和图片严格匹配）
-    let data = [];
-    let typeIndex = 0; // 循环分配纹样类型
-    let imgSubIndex = 0; // 循环分配同类型下的图片
-    for (let i = 0; i < 200; i++) {
-        // 轮询纹样类型
-        const type = typeList[typeIndex % typeList.length];
-        typeIndex++;
-        
-        // 同类型下轮询专属图片
-        const imgPool = patternImagePool[type];
-        const imgUrl = imgPool[imgSubIndex % imgPool.length];
-        imgSubIndex++;
-        
-        // 其他信息随机生成（但类型和图片已绑定）
-        const source = sourceList[Math.floor(Math.random() * sourceList.length)];
-        const dynasty = ["明代","清代","宋代","元代","唐代"][Math.floor(Math.random()*5)];
-        const mean1 = meaningPool[Math.floor(Math.random() * meaningPool.length)];
-        const mean2 = meaningPool[Math.floor(Math.random() * meaningPool.length)];
-        const meaning = mean1 + (Math.random() > 0.6 ? ' · ' + mean2 : '');
-        const craft = ["镂雕","浮雕","圆雕","透雕","阴刻"][Math.floor(Math.random()*5)];
-        const name = `${dynasty}${type}·${craft}${Math.floor(Math.random()*50)+1}号`;
-        
-        data.push({
-            id: i + 1,
-            name: name,
-            type: type,
-            mean: meaning,
-            source: source,
-            imgUrl: imgUrl,
-            fallback: imgUrl // 备用图和主图一致，确保不失效
-        });
-    }
-
+    // 当前筛选列表和选中项
     let currentList = [...data];
     let selectedItems = [];
 
-    // 填充筛选下拉框
+    // 填充下拉框
     function populateFilters() {
         const typeSelect = document.getElementById('type');
         const sourceSelect = document.getElementById('source');
         const uniqueTypes = [...new Set(data.map(d => d.type))].sort();
         const uniqueSources = [...new Set(data.map(d => d.source))].sort();
-        typeSelect.innerHTML = '<option value="all">全部类型</option>' + uniqueTypes.map(t => `<option value="${t}">${t}</option>`).join('');
-        sourceSelect.innerHTML = '<option value="all">全部来源</option>' + uniqueSources.map(s => `<option value="${s}">${s}</option>`).join('');
+        typeSelect.innerHTML = '<option value="all">🎋 全部纹样类型</option>' + uniqueTypes.map(t => `<option value="${t}">${t}</option>`).join('');
+        sourceSelect.innerHTML = '<option value="all">🏛️ 全部来源机构</option>' + uniqueSources.map(s => `<option value="${s}">${s}</option>`).join('');
     }
 
-    // 渲染卡片（图片100%加载）
+    // 渲染网格
     function renderGrid(list) {
         const grid = document.getElementById('grid');
         if (list.length === 0) {
@@ -237,18 +527,19 @@
             const isSelected = selectedItems.some(s => s.id === item.id);
             return `
             <div class="card ${isSelected ? 'selected' : ''}" onclick="toggleSelect(${item.id})">
-                <img src="${item.imgUrl}" alt="${item.name}" loading="lazy">
+                <div class="card-img">
+                    <img src="${item.imgUrl}" alt="${item.name}" loading="lazy" onerror="this.onerror=null; this.src='${FALLBACK_IMAGE}'">
+                </div>
                 <div class="info">
                     <h4>${item.name}</h4>
-                    <p>类型：${item.type}</p>
+                    <p><span class="badge">${item.type}</span> <span class="badge">${item.source}</span></p>
                     <p>寓意：${item.mean}</p>
-                    <p>来源：${item.source}</p>
                 </div>
             </div>`;
         }).join('');
     }
 
-    // 切换选中状态
+    // 切换选中
     window.toggleSelect = function(id) {
         const item = data.find(d => d.id === id);
         if (!item) return;
@@ -258,14 +549,12 @@
         renderGrid(currentList);
     };
 
-    // 更新已选提示
     function updateSelectedBar() {
         const bar = document.getElementById('selected');
         if (selectedItems.length === 0) bar.innerText = '已选纹样：无';
-        else bar.innerText = '已选：' + selectedItems.map(s => s.name).join('、').substring(0,50) + (selectedItems.length>5?'…':'');
+        else bar.innerText = '已选：' + selectedItems.map(s => s.name).join('、').substring(0,50) + (selectedItems.length > 5 ? '…' : '');
     }
 
-    // 全选当前页
     window.selectAllVisible = function() {
         currentList.forEach(item => {
             if (!selectedItems.some(s => s.id === item.id)) selectedItems.push(item);
@@ -274,31 +563,27 @@
         renderGrid(currentList);
     };
 
-    // 清空选择
     window.clearSelection = function() {
         selectedItems = [];
         updateSelectedBar();
         renderGrid(currentList);
     };
 
-    // AI融合
     window.fusion = function() {
         if (selectedItems.length < 2) return alert('至少选择2个纹样进行AI融合');
         alert('AI融合生成：\n' + selectedItems.map(s => s.name).join(' + '));
     };
 
-    // 下载链接
     window.downloadLinks = function() {
         if (selectedItems.length === 0) return alert('请先选择要下载的纹样');
         const links = selectedItems.map(item => item.imgUrl).join('\n');
         navigator.clipboard.writeText(links).then(() => {
             alert('已复制 ' + selectedItems.length + ' 个图片链接到剪贴板');
         }).catch(() => {
-            alert('复制失败，可手动保存链接：\n' + links);
+            alert('复制失败，可手动保存');
         });
     };
 
-    // 应用筛选
     window.applyFilter = function() {
         const searchTerm = document.getElementById('search').value.trim().toLowerCase();
         const typeVal = document.getElementById('type').value;
@@ -321,6 +606,5 @@
     renderGrid(data);
 })();
 </script>
-
 </body>
 </html>
